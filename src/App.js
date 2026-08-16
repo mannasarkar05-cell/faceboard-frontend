@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './Login.css';
 
+// ১. আপনার লাইভ ব্যাকএন্ডের URL এখানে সেট করুন
+const API_URL = "https://faceboard-backend-qv2v.onrender.com"; // আপনার আসল ব্যাকএন্ড লিঙ্ক এখানে বসাবেন
+
 function App() {
   // Navigation & View States
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -10,7 +13,7 @@ function App() {
   const [profileTab, setProfileTab] = useState('posts');
   const [aboutSubTab, setAboutSubTab] = useState('overview');
 
-  // Main Nav Tab State ('home', 'video', 'groups', 'market')
+  // Facebook Main Nav Tab State ('home', 'video', 'groups', 'market')
   const [currentNavTab, setCurrentNavTab] = useState('home');
 
   // Top Right Dropdowns / Popups States
@@ -38,16 +41,7 @@ function App() {
   });
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [forgotEmail, setForgotEmail] = useState('');
-  
-  // ডায়নামিক ইউজারনেম স্টেট (localStorage যুক্ত)
-  const [currentUserName, setCurrentUserName] = useState(() => 
-    localStorage.getItem('fb_current_user_name') || 'Manna.sarkar05'
-  );
-
-  // নাম পরিবর্তনের পপআপ এবং ফর্ম স্টেট
-  const [showEditNameModal, setShowEditNameModal] = useState(false);
-  const [tempFirstName, setTempFirstName] = useState('');
-  const [tempLastName, setTempLastName] = useState('');
+  const [currentUserName, setCurrentUserName] = useState('Chandana');
 
   // Persistent Media States (localStorage)
   const [profilePic, setProfilePic] = useState(() => 
@@ -64,26 +58,16 @@ function App() {
       try { return JSON.parse(saved); } catch (e) { /* ignore */ }
     }
     return [
-      { id: 1, name: currentUserName, bgImage: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=300&q=80', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80' },
-      { id: 2, name: 'Sarah Khan', bgImage: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=300&q=80', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80' },
-      { id: 3, name: 'Tanvir Ahmed', bgImage: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=300&q=80', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=100&q=80' }
+      { id: 1, name: 'Wears Zone', bgImage: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=300&q=80', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80' },
+      { id: 2, name: 'AG Computers', bgImage: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=300&q=80', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80' },
+      { id: 3, name: 'Narayan Banerjee', bgImage: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=300&q=80', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=100&q=80' },
+      { id: 4, name: 'AYRAA', bgImage: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=300&q=80', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=100&q=80' },
+      { id: 5, name: 'Gadget Fair', bgImage: 'https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&w=300&q=80', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80' }
     ];
   });
 
-  // স্টোরি ক্রিয়েট ও ভিউ পপআপ স্টেট
-  const [showCreateStoryModal, setShowCreateStoryModal] = useState(false);
-  const [storyText, setStoryText] = useState('');
-  const [storyMedia, setStoryMedia] = useState(null);
-  const [activeStoryView, setActiveStoryView] = useState(null);
-
-  // Posts State
-  const [posts, setPosts] = useState(() => {
-    const saved = localStorage.getItem('fb_posts');
-    if (saved) {
-      try { return JSON.parse(saved); } catch (e) { /* ignore */ }
-    }
-    return [];
-  });
+  // ۲. Posts State: ব্যাকএন্ড থেকে ডেটা লোড করার জন্য ইনিশিয়ালি খালি রাখা হয়েছে
+  const [posts, setPosts] = useState([]);
 
   const [expandedPosts, setExpandedPosts] = useState({});
 
@@ -98,24 +82,14 @@ function App() {
       try { return JSON.parse(saved); } catch (e) { /* ignore */ }
     }
     return {
-      livesIn: 'Chittagong',
-      hometown: 'Chittagong, Bangladesh',
-      work: '', 
-      education: 'University/College',
-      friendsCount: 0
+      livesIn: 'Feni',
+      hometown: 'Feni, Bangladesh',
+      work: 'Self-Employed',
+      education: 'University/College'
     };
   });
   const [isEditingDetails, setIsEditingDetails] = useState(false);
   const [tempDetails, setTempDetails] = useState({ ...userDetails });
-
-  // ডায়নামিক ফ্রেন্ড লিস্ট স্টেট
-  const [friendsList, setFriendsList] = useState(() => {
-    const saved = localStorage.getItem('fb_friends_list');
-    if (saved) {
-      try { return JSON.parse(saved); } catch (e) { /* ignore */ }
-    }
-    return [];
-  });
 
   // New Post States
   const [newPostText, setNewPostText] = useState('');
@@ -125,25 +99,26 @@ function App() {
   const [showFeelingPicker, setShowFeelingPicker] = useState(false);
   const [commentInputs, setCommentInputs] = useState({});
 
-  // ফ্রেন্ড রিকুয়েস্ট ও নোটিফিকেশন সিস্টেম
-  const [friendStatus, setFriendStatus] = useState('Add Friend'); 
-  const [notifications, setNotifications] = useState([
-    { id: 1, text: 'Welcome to Faceboard! Connect with real friends.', type: 'welcome' }
-  ]);
-
-  const [viewingOtherProfile, setViewingOtherProfile] = useState(false);
-
   const feelingsList = ['😀 Happy', '🥰 Loved', '🥳 Excited', '😎 Cool', '😴 Sleepy', '🔥 Energetic', '☕ Drinking Coffee', '💻 Coding'];
 
   // Sync with localStorage
-  useEffect(() => { localStorage.setItem('fb_current_user_name', currentUserName); }, [currentUserName]);
   useEffect(() => { localStorage.setItem('fb_profile_pic', profilePic); }, [profilePic]);
   useEffect(() => { localStorage.setItem('fb_cover_photo', coverPhoto); }, [coverPhoto]);
   useEffect(() => { localStorage.setItem('fb_stories', JSON.stringify(stories)); }, [stories]);
-  useEffect(() => { localStorage.setItem('fb_posts', JSON.stringify(posts)); }, [posts]);
   useEffect(() => { localStorage.setItem('fb_bio', bio); }, [bio]);
   useEffect(() => { localStorage.setItem('fb_user_details', JSON.stringify(userDetails)); }, [userDetails]);
-  useEffect(() => { localStorage.setItem('fb_friends_list', JSON.stringify(friendsList)); }, [friendsList]);
+
+  // ۳. ব্যাকএন্ড থেকে পোস্ট ফেচ (Fetch) করার জন্য useEffect
+  useEffect(() => {
+    fetch(`${API_URL}/api/posts`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setPosts(data);
+        }
+      })
+      .catch(err => console.error("Error fetching posts from backend:", err));
+  }, []);
 
   // Handlers
   const handleRegister = (e) => {
@@ -170,19 +145,6 @@ function App() {
     setForgotEmail('');
   };
 
-  // নাম পরিবর্তন হ্যান্ডলার
-  const handleNameChangeSubmit = (e) => {
-    e.preventDefault();
-    if (!tempFirstName.trim()) {
-      alert('First name cannot be empty!');
-      return;
-    }
-    const fullName = tempLastName.trim() ? `${tempFirstName.trim()} ${tempLastName.trim()}` : tempFirstName.trim();
-    setCurrentUserName(fullName);
-    setShowEditNameModal(false);
-    alert('Name updated successfully!');
-  };
-
   const handleMediaUpload = (e, callback) => {
     const file = e.target.files[0];
     if (file) {
@@ -192,12 +154,12 @@ function App() {
     }
   };
 
-  const handlePostSubmit = (e) => {
+  // ৪. ব্যাকএন্ডে পোস্ট সাবমিট করার ফাংশন (async/await সহ)
+  const handlePostSubmit = async (e) => {
     e.preventDefault();
     if (!newPostText.trim() && !newPostMedia && !newFeeling) return;
 
     const newPost = {
-      id: Date.now(),
       name: currentUserName,
       avatar: profilePic,
       time: 'Just now',
@@ -210,49 +172,47 @@ function App() {
       comments: []
     };
 
-    setPosts([newPost, ...posts]);
-    setNewPostText('');
-    setNewPostMedia(null);
-    setNewMediaType('');
-    setNewFeeling('');
-    setShowFeelingPicker(false);
-  };
+    try {
+      const response = await fetch(`${API_URL}/api/posts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newPost),
+      });
 
-  const handleStorySubmit = (e) => {
-    e.preventDefault();
-    if (!storyMedia) {
-      alert('Please select a photo for your story!');
-      return;
+      if (!response.ok) {
+        throw new Error('Failed to save post on server');
+      }
+
+      const savedPost = await response.json();
+
+      setPosts([savedPost, ...posts]);
+      setNewPostText('');
+      setNewPostMedia(null);
+      setNewMediaType('');
+      setNewFeeling('');
+      setShowFeelingPicker(false);
+    } catch (error) {
+      console.error("Error saving post:", error);
+      alert("Could not post to server. Please check your backend connection.");
     }
-
-    const newStory = {
-      id: Date.now(),
-      name: currentUserName,
-      bgImage: storyMedia,
-      avatar: profilePic,
-      text: storyText
-    };
-
-    setStories([newStory, ...stories]);
-    setStoryMedia(null);
-    setStoryText('');
-    setShowCreateStoryModal(false);
-    alert('Story added successfully!');
   };
 
   const handleDeletePost = (id) => {
     if (window.confirm('Are you sure you want to delete this post?')) {
-      setPosts(posts.filter(post => post.id !== id));
+      // আপনি চাইলে ব্যাকএন্ড থেকেও ডিলিট করার জন্য fetch(`${API_URL}/api/posts/${id}`, { method: 'DELETE' }) যোগ করতে পারেন
+      setPosts(posts.filter(post => post.id !== id && post._id !== id));
     }
   };
 
   const handleLike = (id) => {
     setPosts(posts.map(post => {
-      if (post.id === id) {
-        const updatedLikes = post.isLiked ? post.likes - 1 : post.likes + 1;
+      const postId = post.id || post._id;
+      if (postId === id) {
         return {
           ...post,
-          likes: updatedLikes,
+          likes: post.isLiked ? post.likes - 1 : post.likes + 1,
           isLiked: !post.isLiked
         };
       }
@@ -270,7 +230,8 @@ function App() {
     if (!commentText || !commentText.trim()) return;
 
     setPosts(posts.map(post => {
-      if (post.id === postId) {
+      const currentId = post.id || post._id;
+      if (currentId === postId) {
         return {
           ...post,
           comments: [...post.comments, `${currentUserName}: ${commentText}`]
@@ -282,24 +243,7 @@ function App() {
     setCommentInputs({ ...commentInputs, [postId]: '' });
   };
 
-  const handleSendFriendRequest = () => {
-    if (friendStatus === 'Add Friend') {
-      setFriendStatus('Request Sent');
-      setNotifications(prev => [
-        { id: Date.now(), text: `You sent a friend request.`, type: 'friend_request' },
-        ...prev
-      ]);
-      alert('Friend request sent!');
-    } else if (friendStatus === 'Request Sent') {
-      setFriendStatus('Friends');
-      const newFriend = { id: Date.now(), name: 'Visitor Friend', avatar: profilePic };
-      const updatedFriends = [...friendsList, newFriend];
-      setFriendsList(updatedFriends);
-      setUserDetails(prev => ({ ...prev, friendsCount: updatedFriends.length }));
-      alert('You are now friends!');
-    }
-  };
-
+  // --- Helper to close all floating popups ---
   const closeAllPopups = () => {
     setShowMenuPopup(false);
     setShowMessengerPopup(false);
@@ -307,7 +251,7 @@ function App() {
     setShowProfileDropdown(false);
   };
 
-  // --- Forgot Password Page ---
+  // --- 1. Forgot Password Page ---
   if (showForgotPassword) {
     return (
       <div style={styles.centerContainer}>
@@ -333,7 +277,7 @@ function App() {
     );
   }
 
-  // --- Register Page ---
+  // --- 2. Register Page ---
   if (isRegistering) {
     const days = Array.from({ length: 31 }, (_, i) => i + 1);
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -384,7 +328,7 @@ function App() {
     );
   }
 
-  // --- Login Page ---
+  // --- 3. Login Page ---
   if (!isLoggedIn) {
     return (
       <div className="fb-login-container">
@@ -414,13 +358,7 @@ function App() {
   const renderPostCreator = () => (
     <div style={styles.postCreatorBox}>
       <div style={styles.postCreatorTopRow}>
-        <img 
-          src={profilePic} 
-          alt="Avatar" 
-          style={{ ...styles.avatarSmall, cursor: 'pointer' }} 
-          onClick={() => { setViewingOtherProfile(false); setShowProfilePage(true); }}
-          title="Go to profile"
-        />
+        <img src={profilePic} alt="Avatar" style={styles.avatarSmall} />
         
         <div style={styles.inputWithIconsWrapper}>
           <input 
@@ -506,8 +444,9 @@ function App() {
       </div>
     ) : (
       posts.map((post) => {
+        const postId = post.id || post._id;
         const isLongText = post.content && post.content.length > CHARACTER_LIMIT;
-        const isExpanded = expandedPosts[post.id];
+        const isExpanded = expandedPosts[postId];
         
         let displayContent = post.content;
         if (isLongText && !isExpanded) {
@@ -515,35 +454,26 @@ function App() {
         }
 
         return (
-          <div key={post.id} style={styles.postCard}>
+          <div key={postId} style={styles.postCard}>
             <div style={styles.postHeader}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <img 
-                  src={post.avatar} 
-                  alt="Avatar" 
-                  style={{ ...styles.avatarSmall, cursor: 'pointer' }} 
-                  onClick={() => { setViewingOtherProfile(false); setShowProfilePage(true); }}
-                  title="Go to profile"
-                />
+                <img src={post.avatar} alt="Avatar" style={styles.avatarSmall} />
                 <div>
-                  <strong 
-                    style={{ color: '#e4e6eb', fontSize: '15px', cursor: 'pointer' }}
-                    onClick={() => { setViewingOtherProfile(false); setShowProfilePage(true); }}
-                  >
+                  <strong style={{ color: '#e4e6eb', fontSize: '15px' }}>
                     {post.name} {post.feeling && <span style={{ fontWeight: 'normal', color: '#b0b3b8', fontSize: '13px' }}>is feeling {post.feeling}</span>}
                   </strong>
                   <br />
                   <small style={{ color: '#b0b3b8', fontSize: '12px' }}>{post.time}</small>
                 </div>
               </div>
-              <button onClick={() => handleDeletePost(post.id)} title="Delete Post" style={styles.deleteBtn}>🗑️</button>
+              <button onClick={() => handleDeletePost(postId)} title="Delete Post" style={styles.deleteBtn}>🗑️</button>
             </div>
 
             {post.content && (
               <div style={styles.postContent}>
                 <span>{displayContent}</span>
                 {isLongText && (
-                  <span onClick={() => toggleExpandPost(post.id)} style={styles.seeMoreBtn}>
+                  <span onClick={() => toggleExpandPost(postId)} style={styles.seeMoreBtn}>
                     {isExpanded ? ' See less' : ' See more'}
                   </span>
                 )}
@@ -562,11 +492,11 @@ function App() {
             
             <div style={styles.postStats}>
               <span>👍 {post.likes} Likes</span>
-              <span>{post.comments.length} Comments</span>
+              <span>{post.comments ? post.comments.length : 0} Comments</span>
             </div>
 
             <div style={styles.postActionButtons}>
-              <button onClick={() => handleLike(post.id)} style={{ ...styles.actionBtn, color: post.isLiked ? '#2d88ff' : '#b0b3b8' }}>
+              <button onClick={() => handleLike(postId)} style={{ ...styles.actionBtn, color: post.isLiked ? '#2d88ff' : '#b0b3b8' }}>
                 {post.isLiked ? '👍 Liked' : '👍 Like'}
               </button>
               <button style={styles.actionBtn}>💬 Comment</button>
@@ -574,16 +504,16 @@ function App() {
             </div>
 
             <div style={{ padding: '8px 12px' }}>
-              {post.comments.map((comment, index) => (
+              {post.comments && post.comments.map((comment, index) => (
                 <div key={index} style={styles.commentBubble}>{comment}</div>
               ))}
               
-              <form onSubmit={(e) => handleAddComment(post.id, e)} style={{ display: 'flex', gap: '8px', marginTop: '6px' }}>
+              <form onSubmit={(e) => handleAddComment(postId, e)} style={{ display: 'flex', gap: '8px', marginTop: '6px' }}>
                 <input 
                   type="text" 
                   placeholder="Write a comment..." 
-                  value={commentInputs[post.id] || ''} 
-                  onChange={(e) => setCommentInputs({ ...commentInputs, [post.id]: e.target.value })}
+                  value={commentInputs[postId] || ''} 
+                  onChange={(e) => setCommentInputs({ ...commentInputs, [postId]: e.target.value })}
                   style={styles.commentInput}
                 />
                 <button type="submit" style={styles.sendBtn}>Send</button>
@@ -595,22 +525,17 @@ function App() {
     );
   };
 
-  // --- Profile Page View ---
+  // --- 4. Profile Page View ---
   if (showProfilePage) {
     return (
       <div style={{ backgroundColor: '#18191a', minHeight: '100vh', fontFamily: 'Helvetica, Arial, sans-serif', color: '#e4e6eb' }}>
         <nav style={styles.navbar}>
-          <div onClick={() => { setShowProfilePage(false); setViewingOtherProfile(false); closeAllPopups(); }} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div onClick={() => { setShowProfilePage(false); closeAllPopups(); }} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <div style={styles.fbLogoCircle}>f</div>
             <input type="text" placeholder="🔍 Search Faceboard" style={styles.navSearch} />
           </div>
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-            <span onClick={() => { setShowProfilePage(false); setViewingOtherProfile(false); setCurrentNavTab('home'); setSidebarActiveView(null); closeAllPopups(); }} style={styles.homeNavBtn}>🏠 Home</span>
-            
-            <button onClick={() => setViewingOtherProfile(!viewingOtherProfile)} style={{ ...styles.secondaryBtnDark, backgroundColor: viewingOtherProfile ? '#31a24c' : '#3a3b3c' }}>
-              {viewingOtherProfile ? 'Viewing as Visitor (See Add Friend)' : 'Simulate Visitor View'}
-            </button>
-
+            <span onClick={() => { setShowProfilePage(false); setCurrentNavTab('home'); setSidebarActiveView(null); closeAllPopups(); }} style={styles.homeNavBtn}>🏠 Home</span>
             <button onClick={() => setIsLoggedIn(false)} style={styles.logoutBtn}>Log Out</button>
           </div>
         </nav>
@@ -619,12 +544,10 @@ function App() {
           <div style={{ maxWidth: '940px', margin: '0 auto' }}>
             <div style={{ position: 'relative', width: '100%', height: '350px', backgroundColor: '#3a3b3c', overflow: 'hidden' }}>
               <img src={coverPhoto} alt="Cover" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              {!viewingOtherProfile && (
-                <label style={styles.editCoverBtn}>
-                  📷 Edit Cover Photo
-                  <input type="file" accept="image/*" onChange={(e) => handleMediaUpload(e, (url) => setCoverPhoto(url))} style={{ display: 'none' }} />
-                </label>
-              )}
+              <label style={styles.editCoverBtn}>
+                📷 Edit Cover Photo
+                <input type="file" accept="image/*" onChange={(e) => handleMediaUpload(e, (url) => setCoverPhoto(url))} style={{ display: 'none' }} />
+              </label>
             </div>
 
             <div style={{ padding: '0 30px' }}>
@@ -632,32 +555,20 @@ function App() {
                 <div style={{ display: 'flex', alignItems: 'flex-end', gap: '20px', marginTop: '-85px', flexWrap: 'wrap' }}>
                   <div style={styles.profileAvatarContainer}>
                     <img src={profilePic} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    {!viewingOtherProfile && (
-                      <label style={styles.editAvatarBtn}>
-                        📷
-                        <input type="file" accept="image/*" onChange={(e) => handleMediaUpload(e, (url) => setProfilePic(url))} style={{ display: 'none' }} />
-                      </label>
-                    )}
+                    <label style={styles.editAvatarBtn}>
+                      📷
+                      <input type="file" accept="image/*" onChange={(e) => handleMediaUpload(e, (url) => setProfilePic(url))} style={{ display: 'none' }} />
+                    </label>
                   </div>
                   <div style={{ paddingBottom: '8px' }}>
                     <h1 style={{ fontSize: '32px', margin: 0, fontWeight: 'bold', color: '#e4e6eb' }}>{currentUserName}</h1>
-                    <p style={{ color: '#b0b3b8', margin: '4px 0 0 0', fontSize: '15px' }}>
-                      {userDetails.friendsCount > 0 ? `${userDetails.friendsCount} friends` : ''}
-                    </p>
+                    <p style={{ color: '#b0b3b8', margin: '4px 0 0 0', fontSize: '15px' }}>0 friends • 0 followers</p>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', gap: '8px', paddingBottom: '12px' }}>
-                  {viewingOtherProfile ? (
-                    <button onClick={handleSendFriendRequest} style={styles.primaryBtn}>
-                      {friendStatus === 'Add Friend' ? '➕ Add Friend' : friendStatus === 'Request Sent' ? '✓ Request Sent (Click to Accept)' : '✓ Friends'}
-                    </button>
-                  ) : (
-                    <>
-                      <button onClick={() => setShowCreateStoryModal(true)} style={styles.primaryBtn}>➕ Add to story</button>
-                      <button onClick={() => setProfileTab('about')} style={styles.secondaryBtnDark}>✏️ Edit profile</button>
-                    </>
-                  )}
+                  <button style={styles.primaryBtn}>+ Add to story</button>
+                  <button onClick={() => setProfileTab('about')} style={styles.secondaryBtnDark}>✏️ Edit profile</button>
                 </div>
               </div>
             </div>
@@ -713,19 +624,19 @@ function App() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <div style={styles.overviewItem}>
                       <div>💼 Works at <b>{userDetails.work || 'Not added'}</b></div>
-                      {!viewingOtherProfile && <button onClick={() => setAboutSubTab('work_edu')} style={styles.linkBtn}>Edit</button>}
+                      <button onClick={() => setAboutSubTab('work_edu')} style={styles.linkBtn}>Edit</button>
                     </div>
                     <div style={styles.overviewItem}>
                       <div>🎓 Studied at <b>{userDetails.education || 'Not added'}</b></div>
-                      {!viewingOtherProfile && <button onClick={() => setAboutSubTab('work_edu')} style={styles.linkBtn}>Edit</button>}
+                      <button onClick={() => setAboutSubTab('work_edu')} style={styles.linkBtn}>Edit</button>
                     </div>
                     <div style={styles.overviewItem}>
                       <div>📍 Lives in <b>{userDetails.livesIn || 'Not added'}</b></div>
-                      {!viewingOtherProfile && <button onClick={() => setAboutSubTab('places')} style={styles.linkBtn}>Edit</button>}
+                      <button onClick={() => setAboutSubTab('places')} style={styles.linkBtn}>Edit</button>
                     </div>
                     <div style={styles.overviewItem}>
                       <div>🏠 From <b>{userDetails.hometown || 'Not added'}</b></div>
-                      {!viewingOtherProfile && <button onClick={() => setAboutSubTab('places')} style={styles.linkBtn}>Edit</button>}
+                      <button onClick={() => setAboutSubTab('places')} style={styles.linkBtn}>Edit</button>
                     </div>
                   </div>
                 </div>
@@ -737,13 +648,13 @@ function App() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <div>
                       <label style={styles.label}>Workplace</label>
-                      <input type="text" value={userDetails.work} onChange={(e) => setUserDetails({...userDetails, work: e.target.value})} disabled={viewingOtherProfile} style={styles.inputFieldDark} />
+                      <input type="text" value={userDetails.work} onChange={(e) => setUserDetails({...userDetails, work: e.target.value})} style={styles.inputFieldDark} />
                     </div>
                     <div>
                       <label style={styles.label}>Education / College</label>
-                      <input type="text" value={userDetails.education} onChange={(e) => setUserDetails({...userDetails, education: e.target.value})} disabled={viewingOtherProfile} style={styles.inputFieldDark} />
+                      <input type="text" value={userDetails.education} onChange={(e) => setUserDetails({...userDetails, education: e.target.value})} style={styles.inputFieldDark} />
                     </div>
-                    {!viewingOtherProfile && <button onClick={() => alert('Updated!')} style={styles.primaryBtn}>Save Changes</button>}
+                    <button onClick={() => alert('Updated!')} style={styles.primaryBtn}>Save Changes</button>
                   </div>
                 </div>
               )}
@@ -754,13 +665,13 @@ function App() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <div>
                       <label style={styles.label}>Current City / Lives In</label>
-                      <input type="text" value={userDetails.livesIn} onChange={(e) => setUserDetails({...userDetails, livesIn: e.target.value})} disabled={viewingOtherProfile} style={styles.inputFieldDark} />
+                      <input type="text" value={userDetails.livesIn} onChange={(e) => setUserDetails({...userDetails, livesIn: e.target.value})} style={styles.inputFieldDark} />
                     </div>
                     <div>
                       <label style={styles.label}>Hometown</label>
-                      <input type="text" value={userDetails.hometown} onChange={(e) => setUserDetails({...userDetails, hometown: e.target.value})} disabled={viewingOtherProfile} style={styles.inputFieldDark} />
+                      <input type="text" value={userDetails.hometown} onChange={(e) => setUserDetails({...userDetails, hometown: e.target.value})} style={styles.inputFieldDark} />
                     </div>
-                    {!viewingOtherProfile && <button onClick={() => alert('Updated!')} style={styles.primaryBtn}>Save Changes</button>}
+                    <button onClick={() => alert('Updated!')} style={styles.primaryBtn}>Save Changes</button>
                   </div>
                 </div>
               )}
@@ -769,70 +680,19 @@ function App() {
                 <div>
                   <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', color: '#e4e6eb' }}>Basic Information</h3>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <div style={styles.infoCard}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div>
-                          <span style={{ display: 'block', fontSize: '12px', color: '#b0b3b8' }}>Name</span>
-                          <strong>{currentUserName}</strong>
-                        </div>
-                        {!viewingOtherProfile && (
-                          <button 
-                            onClick={() => {
-                              const parts = currentUserName.split(' ');
-                              setTempFirstName(parts[0] || '');
-                              setTempLastName(parts.slice(1).join(' ') || '');
-                              setShowEditNameModal(true);
-                            }} 
-                            style={styles.linkBtn}
-                          >
-                            Edit
-                          </button>
-                        )}
-                      </div>
-                    </div>
+                    <div style={styles.infoCard}><span>Username</span><strong>{currentUserName}</strong></div>
                     <div style={styles.infoCard}><span>Gender</span><strong>{regData.gender}</strong></div>
                   </div>
                 </div>
               )}
             </div>
           </div>
-        ) : profileTab === 'friends' ? (
-          <div style={{ maxWidth: '940px', margin: '20px auto', padding: '20px', backgroundColor: '#242526', borderRadius: '8px' }}>
-            <h3>Friends ({friendsList.length})</h3>
-            {friendsList.length === 0 ? (
-              <p style={{ color: '#b0b3b8', marginTop: '10px' }}>No friends added yet. When someone accepts your request, they will appear here.</p>
-            ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', marginTop: '15px' }}>
-                {friendsList.map(f => (
-                  <div key={f.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: '#3a3b3c', padding: '10px', borderRadius: '8px' }}>
-                    <img src={f.avatar} alt={f.name} style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover' }} />
-                    <strong style={{ color: '#e4e6eb' }}>{f.name}</strong>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
         ) : (
           <div style={styles.profileContentLayout}>
             <div style={{ width: '360px', flex: '1 1 300px' }}>
               <div style={styles.cardBoxSimple}>
                 <h3 style={{ margin: '0 0 12px 0', fontSize: '20px', color: '#e4e6eb' }}>Intro</h3>
-                
-                {!viewingOtherProfile && (
-                  <button 
-                    onClick={() => {
-                      const parts = currentUserName.split(' ');
-                      setTempFirstName(parts[0] || '');
-                      setTempLastName(parts.slice(1).join(' ') || '');
-                      setShowEditNameModal(true);
-                    }} 
-                    style={styles.fullWidthGrayBtn}
-                  >
-                    ✏️ Edit Profile Name
-                  </button>
-                )}
-
-                <div style={{ textAlign: 'center', margin: '16px 0', borderBottom: '1px solid #3a3b3c', paddingBottom: '16px' }}>
+                <div style={{ textAlign: 'center', marginBottom: '16px', borderBottom: '1px solid #3a3b3c', paddingBottom: '16px' }}>
                   {isEditingBio ? (
                     <div>
                       <textarea value={tempBio} onChange={(e) => setTempBio(e.target.value)} style={styles.textareaFieldDark} />
@@ -843,16 +703,14 @@ function App() {
                     </div>
                   ) : (
                     <div>
-                      <p style={{ margin: '0 0 8px 0', color: '#e4e6eb' }}>{bio}</p>
-                      {!viewingOtherProfile && (
-                        <button onClick={() => { setTempBio(bio === 'Add a short bio...' ? '' : bio); setIsEditingBio(true); }} style={styles.fullWidthGrayBtn}>Edit bio</button>
-                      )}
+                      <p style={{ margin: '0 0 8px 0', cursor: 'pointer', color: '#e4e6eb' }} onClick={() => { setTempBio(bio === 'Add a short bio...' ? '' : bio); setIsEditingBio(true); }}>{bio}</p>
+                      <button onClick={() => { setTempBio(bio === 'Add a short bio...' ? '' : bio); setIsEditingBio(true); }} style={styles.fullWidthGrayBtn}>Edit bio</button>
                     </div>
                   )}
                 </div>
 
                 <div>
-                  {isEditingDetails && !viewingOtherProfile ? (
+                  {isEditingDetails ? (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                       <label style={styles.label}>Lives in:</label>
                       <input type="text" value={tempDetails.livesIn} onChange={(e) => setTempDetails({...tempDetails, livesIn: e.target.value})} style={styles.inputFieldDark} />
@@ -872,12 +730,10 @@ function App() {
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', color: '#b0b3b8' }}>
                         <div>📍 Lives in <b>{userDetails.livesIn}</b></div>
                         <div>🏠 Hometown <b>{userDetails.hometown}</b></div>
-                        {userDetails.work && <div>💼 Works at <b>{userDetails.work}</b></div>}
+                        <div>💼 Works at <b>{userDetails.work}</b></div>
                         <div>🎓 Studied at <b>{userDetails.education}</b></div>
                       </div>
-                      {!viewingOtherProfile && (
-                        <button onClick={() => { setTempDetails({...userDetails}); setIsEditingDetails(true); }} style={styles.fullWidthGrayBtn}>Edit details</button>
-                      )}
+                      <button onClick={() => { setTempDetails({...userDetails}); setIsEditingDetails(true); }} style={styles.fullWidthGrayBtn}>Edit details</button>
                     </div>
                   )}
                 </div>
@@ -885,98 +741,8 @@ function App() {
             </div>
 
             <div style={{ flex: '2 1 400px' }}>
-              {!viewingOtherProfile && renderPostCreator()}
+              {renderPostCreator()}
               {renderFeed()}
-            </div>
-          </div>
-        )}
-
-        {showEditNameModal && (
-          <div style={styles.modalOverlay}>
-            <div style={styles.modalBox}>
-              <div style={styles.modalHeader}>
-                <h3 style={{ margin: 0 }}>Name Change</h3>
-                <button onClick={() => setShowEditNameModal(false)} style={styles.closeBtn}>✕</button>
-              </div>
-              <p style={{ fontSize: '13px', color: '#b0b3b8', lineHeight: '1.4' }}>
-                If you change your name on Faceboard, you can't change it again for 60 days. Make sure there are no capitalisation, punctuation, or unusual characters.
-              </p>
-              <form onSubmit={handleNameChangeSubmit}>
-                <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
-                  <div style={{ flex: 1 }}>
-                    <label style={styles.label}>First name</label>
-                    <input 
-                      type="text" 
-                      value={tempFirstName} 
-                      onChange={(e) => setTempFirstName(e.target.value)} 
-                      required 
-                      style={styles.inputFieldDark} 
-                    />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <label style={styles.label}>Last name / Surname</label>
-                    <input 
-                      type="text" 
-                      value={tempLastName} 
-                      onChange={(e) => setTempLastName(e.target.value)} 
-                      style={styles.inputFieldDark} 
-                    />
-                  </div>
-                </div>
-
-                <div style={{ backgroundColor: '#3a3b3c', padding: '10px', borderRadius: '6px', fontSize: '13px', color: '#b0b3b8', marginBottom: '15px' }}>
-                  Please note: If you change your name, it will be instantly reflected on your profile, posts, and comments across the site.
-                </div>
-
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                  <button type="button" onClick={() => setShowEditNameModal(false)} style={styles.secondaryBtn}>Cancel</button>
-                  <button type="submit" style={styles.primaryBtn}>Save Changes</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {showCreateStoryModal && (
-          <div style={styles.modalOverlay}>
-            <div style={styles.modalBox}>
-              <div style={styles.modalHeader}>
-                <h2>Create Story</h2>
-                <button onClick={() => setShowCreateStoryModal(false)} style={styles.closeBtn}>✕</button>
-              </div>
-              <form onSubmit={handleStorySubmit}>
-                <div style={{ marginBottom: '15px' }}>
-                  <label style={styles.label}>Story Caption / Text</label>
-                  <input 
-                    type="text" 
-                    placeholder="Write something for your story..." 
-                    value={storyText} 
-                    onChange={(e) => setStoryText(e.target.value)} 
-                    style={styles.inputFieldDark} 
-                  />
-                </div>
-
-                <div style={{ marginBottom: '15px' }}>
-                  <label style={styles.label}>Upload Story Photo *</label>
-                  <input 
-                    type="file" 
-                    accept="image/*" 
-                    onChange={(e) => handleMediaUpload(e, (url) => setStoryMedia(url))} 
-                    style={{ color: '#e4e6eb', marginTop: '5px' }} 
-                  />
-                </div>
-
-                {storyMedia && (
-                  <div style={{ marginBottom: '15px', textAlign: 'center' }}>
-                    <img src={storyMedia} alt="Story preview" style={{ maxHeight: '180px', borderRadius: '8px', objectFit: 'contain' }} />
-                  </div>
-                )}
-
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                  <button type="button" onClick={() => setShowCreateStoryModal(false)} style={styles.secondaryBtn}>Cancel</button>
-                  <button type="submit" style={styles.primaryBtn}>Share to Story</button>
-                </div>
-              </form>
             </div>
           </div>
         )}
@@ -984,15 +750,17 @@ function App() {
     );
   }
 
-  // --- Home / Dashboard Page ---
+  // --- 5. Home / Dashboard Page ---
   return (
     <div style={{ backgroundColor: '#18191a', minHeight: '100vh', fontFamily: 'Helvetica, Arial, sans-serif', color: '#e4e6eb' }}>
+      {/* Top Navbar */}
       <nav style={styles.navbar}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: '220px' }}>
           <div style={styles.fbLogoCircle}>f</div>
           <input type="text" placeholder="🔍 Search Faceboard" style={styles.navSearch} />
         </div>
 
+        {/* Center Icons Bar */}
         <div style={styles.centerNavTabs}>
           <div 
             onClick={() => { setCurrentNavTab('home'); setSidebarActiveView(null); closeAllPopups(); }} 
@@ -1024,7 +792,9 @@ function App() {
           </div>
         </div>
 
+        {/* --- Top Right Corner Icons --- */}
         <div style={styles.topRightIconsContainer}>
+          {/* 1. Menu (9-dot grid) */}
           <div 
             style={{ ...styles.topRightIconButton, backgroundColor: showMenuPopup ? '#3a3b3c' : '#4e4f50' }}
             onClick={() => { closeAllPopups(); setShowMenuPopup(!showMenuPopup); }}
@@ -1033,6 +803,7 @@ function App() {
             <span style={{ fontSize: '18px' }}>☷</span>
           </div>
 
+          {/* 2. Messenger */}
           <div 
             style={{ ...styles.topRightIconButton, backgroundColor: showMessengerPopup ? '#3a3b3c' : '#4e4f50' }}
             onClick={() => { closeAllPopups(); setShowMessengerPopup(!showMessengerPopup); }}
@@ -1041,6 +812,7 @@ function App() {
             <span style={{ fontSize: '16px' }}>💬</span>
           </div>
 
+          {/* 3. Notifications */}
           <div 
             style={{ ...styles.topRightIconButton, backgroundColor: showNotifPopup ? '#3a3b3c' : '#4e4f50', position: 'relative' }}
             onClick={() => { closeAllPopups(); setShowNotifPopup(!showNotifPopup); }}
@@ -1050,6 +822,7 @@ function App() {
             <span style={styles.notifRedDot}></span>
           </div>
 
+          {/* 4. Profile Dropdown (Avatar + Arrow) */}
           <div 
             style={{ ...styles.topRightProfileButton, backgroundColor: showProfileDropdown ? '#3a3b3c' : 'transparent' }}
             onClick={() => { closeAllPopups(); setShowProfileDropdown(!showProfileDropdown); }}
@@ -1061,6 +834,7 @@ function App() {
         </div>
       </nav>
 
+      {/* --- Floating Dropdowns & Popups for Top-Right Icons --- */}
       {showMenuPopup && (
         <div style={styles.floatingPopupCard}>
           <h3 style={{ margin: '0 0 10px 0', borderBottom: '1px solid #3a3b3c', paddingBottom: '8px' }}>Menu Shortcuts</h3>
@@ -1085,17 +859,13 @@ function App() {
       {showNotifPopup && (
         <div style={styles.floatingPopupCard}>
           <h3 style={{ margin: '0 0 10px 0', borderBottom: '1px solid #3a3b3c', paddingBottom: '8px' }}>Notifications</h3>
-          {notifications.map(n => (
-            <div key={n.id} style={{ fontSize: '13.5px', padding: '6px 0', borderBottom: '1px solid #3a3b3c', color: '#e4e6eb' }}>
-              {n.text}
-            </div>
-          ))}
+          <p style={{ color: '#b0b3b8', fontSize: '14px' }}>You have no new notifications.</p>
         </div>
       )}
 
       {showProfileDropdown && (
         <div style={styles.floatingPopupCard}>
-          <div onClick={() => { setViewingOtherProfile(false); setShowProfilePage(true); closeAllPopups(); }} style={styles.popupProfileHeader}>
+          <div onClick={() => { setShowProfilePage(true); closeAllPopups(); }} style={styles.popupProfileHeader}>
             <img src={profilePic} alt="Avatar" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
             <div>
               <strong style={{ fontSize: '15px', color: '#e4e6eb' }}>{currentUserName}</strong>
@@ -1107,6 +877,29 @@ function App() {
         </div>
       )}
 
+      {/* Conditional rendering based on Top Header tab clicks */}
+      {currentNavTab === 'video' && !sidebarActiveView && (
+        <div style={styles.tabContentScreen}>
+          <h2>Video Feed / Watch</h2>
+          <p style={{ color: '#b0b3b8' }}>Explore trending videos and reels here.</p>
+        </div>
+      )}
+
+      {currentNavTab === 'groups' && !sidebarActiveView && (
+        <div style={styles.tabContentScreen}>
+          <h2>Groups</h2>
+          <p style={{ color: '#b0b3b8' }}>Connect with communities that share your interests.</p>
+        </div>
+      )}
+
+      {currentNavTab === 'market' && !sidebarActiveView && (
+        <div style={styles.tabContentScreen}>
+          <h2>Marketplace</h2>
+          <p style={{ color: '#b0b3b8' }}>Buy and sell items in your community.</p>
+        </div>
+      )}
+
+      {/* Sidebar Sub-views */}
       {sidebarActiveView && (
         <div style={styles.tabContentScreen}>
           <h2>{sidebarActiveView}</h2>
@@ -1117,10 +910,11 @@ function App() {
 
       {currentNavTab === 'home' && !sidebarActiveView && (
         <div style={styles.mainDashboardLayout}>
+          {/* Left Sidebar */}
           <div style={styles.sidebar}>
             <ul style={styles.sidebarList}>
-              <li onClick={() => { setViewingOtherProfile(false); setShowProfilePage(true); }} style={styles.sidebarItem}>
-                <img src={profilePic} alt="Avatar" style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover', cursor: 'pointer' }} /> 
+              <li onClick={() => setShowProfilePage(true)} style={styles.sidebarItem}>
+                <img src={profilePic} alt="Avatar" style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }} /> 
                 {currentUserName}
               </li>
               <li onClick={() => setSidebarActiveView('Friends')} style={styles.sidebarItem}><span style={styles.iconStyle}>👥</span> Friends</li>
@@ -1155,28 +949,25 @@ function App() {
             </ul>
           </div>
 
+          {/* Main Feed / Timeline with Stories Section */}
           <div style={{ maxWidth: '680px', width: '100%', margin: '0 auto' }}>
             {renderPostCreator()}
 
+            {/* Stories Row */}
             <div style={styles.storiesRow}>
-              <div onClick={() => setShowCreateStoryModal(true)} style={styles.createStoryCard(profilePic)}>
+              <label style={styles.createStoryCard(profilePic)}>
                 <div style={styles.createStoryPlus}>+</div>
                 <span style={styles.createStoryText}>Create story</span>
-              </div>
+                <input type="file" accept="image/*" onChange={(e) => handleMediaUpload(e, (url) => {
+                  const newStory = { id: Date.now(), name: currentUserName, bgImage: url, avatar: profilePic };
+                  setStories([newStory, ...stories]);
+                })} style={{ display: 'none' }} />
+              </label>
 
               {stories.map(story => (
-                <div key={story.id} onClick={() => setActiveStoryView(story)} style={styles.storyCard(story.bgImage)}>
+                <div key={story.id} style={styles.storyCard(story.bgImage)}>
                   <div style={styles.storyAvatarWrapper}>
-                    <img 
-                      src={story.avatar || profilePic} 
-                      alt="avatar" 
-                      style={styles.storyAvatarImg} 
-                      onClick={(e) => { 
-                        e.stopPropagation(); 
-                        setViewingOtherProfile(true); 
-                        setShowProfilePage(true); 
-                      }} 
-                    />
+                    <img src={story.avatar || profilePic} alt="avatar" style={styles.storyAvatarImg} />
                   </div>
                   <span style={styles.storyTitle}>{story.name}</span>
                 </div>
@@ -1186,84 +977,12 @@ function App() {
             {renderFeed()}
           </div>
 
+          {/* Right Sidebar Contacts */}
           <div style={styles.sidebarRight}>
             <h4 style={{ color: '#b0b3b8', marginBottom: '12px' }}>Contacts</h4>
             <ul style={styles.sidebarList}>
-              {friendsList.map(f => (
-                <li key={f.id} style={styles.sidebarItem} onClick={() => { setViewingOtherProfile(true); setShowProfilePage(true); }}>
-                  <img src={f.avatar} alt="avatar" style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }} />
-                  {f.name}
-                </li>
-              ))}
+              {/* কোনো ডামি কন্টাক্ট নেই */}
             </ul>
-          </div>
-        </div>
-      )}
-
-      {activeStoryView && (
-        <div style={styles.modalOverlay}>
-          <div style={styles.storyViewModal}>
-            <button onClick={() => setActiveStoryView(null)} style={styles.storyCloseBtn}>✕</button>
-            <div style={styles.storyViewHeader}>
-              <img 
-                src={activeStoryView.avatar || profilePic} 
-                alt="avatar" 
-                style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', cursor: 'pointer' }} 
-                onClick={() => { setActiveStoryView(null); setViewingOtherProfile(true); setShowProfilePage(true); }}
-              />
-              <strong 
-                style={{ color: '#fff', cursor: 'pointer' }}
-                onClick={() => { setActiveStoryView(null); setViewingOtherProfile(true); setShowProfilePage(true); }}
-              >
-                {activeStoryView.name}
-              </strong>
-            </div>
-            <img src={activeStoryView.bgImage} alt="Story" style={styles.storyFullImage} />
-            {activeStoryView.text && <p style={styles.storyCaptionText}>{activeStoryView.text}</p>}
-          </div>
-        </div>
-      )}
-
-      {showCreateStoryModal && (
-        <div style={styles.modalOverlay}>
-          <div style={styles.modalBox}>
-            <div style={styles.modalHeader}>
-              <h2>Create Story</h2>
-              <button onClick={() => setShowCreateStoryModal(false)} style={styles.closeBtn}>✕</button>
-            </div>
-            <form onSubmit={handleStorySubmit}>
-              <div style={{ marginBottom: '15px' }}>
-                <label style={styles.label}>Story Caption / Text</label>
-                <input 
-                  type="text" 
-                  placeholder="Write something for your story..." 
-                  value={storyText} 
-                  onChange={(e) => setStoryText(e.target.value)} 
-                  style={styles.inputFieldDark} 
-                />
-              </div>
-
-              <div style={{ marginBottom: '15px' }}>
-                <label style={styles.label}>Upload Story Photo *</label>
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  onChange={(e) => handleMediaUpload(e, (url) => setStoryMedia(url))} 
-                  style={{ color: '#e4e6eb', marginTop: '5px' }} 
-                />
-              </div>
-
-              {storyMedia && (
-                <div style={{ marginBottom: '15px', textAlign: 'center' }}>
-                  <img src={storyMedia} alt="Story preview" style={{ maxHeight: '180px', borderRadius: '8px', objectFit: 'contain' }} />
-                </div>
-              )}
-
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                <button type="button" onClick={() => setShowCreateStoryModal(false)} style={styles.secondaryBtn}>Cancel</button>
-                <button type="submit" style={styles.primaryBtn}>Share to Story</button>
-              </div>
-            </form>
           </div>
         </div>
       )}
@@ -1271,6 +990,7 @@ function App() {
   );
 }
 
+// Inline Styles Object
 const styles = {
   centerContainer: { padding: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundColor: '#18191a', fontFamily: 'Helvetica, Arial, sans-serif' },
   cardBox: { maxWidth: '500px', width: '100%', backgroundColor: '#242526', padding: '24px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)', boxSizing: 'border-box', color: '#e4e6eb' },
@@ -1295,12 +1015,13 @@ const styles = {
   centerNavTabs: { display: 'flex', height: '100%', gap: '4px' },
   centerNavTabItem: { display: 'flex', alignItems: 'center', justifyContent: 'center', width: '110px', fontSize: '22px', cursor: 'pointer', height: '100%', boxSizing: 'border-box' },
   
+  // Top Right Icons & Popups Styles
   topRightIconsContainer: { display: 'flex', alignItems: 'center', gap: '8px', minWidth: '220px', justifyContent: 'flex-end' },
   topRightIconButton: { width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#e4e6eb' },
   topRightProfileButton: { display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 8px', borderRadius: '20px', cursor: 'pointer' },
   topRightAvatar: { width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' },
   profileArrowBadge: { fontSize: '10px', color: '#e4e6eb' },
-  notifRedDot: { position: 'absolute', top: '8px', right: '8px', width: '10px', height: '10px', backgroundColor: '#e4e13f', borderRadius: '50%', border: '2px solid #242526' },
+  notifRedDot: { position: 'absolute', top: '8px', right: '8px', width: '10px', height: '10px', backgroundColor: '#e41e3f', borderRadius: '50%', border: '2px solid #242526' },
   
   floatingPopupCard: { position: 'absolute', top: '64px', right: '16px', width: '300px', backgroundColor: '#242526', border: '1px solid #3a3b3c', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.5)', padding: '16px', zIndex: 1100, color: '#e4e6eb' },
   popupMenuItem: { padding: '10px', borderRadius: '6px', cursor: 'pointer', backgroundColor: '#3a3b3c', fontWeight: 'bold', fontSize: '14px' },
@@ -1364,18 +1085,8 @@ const styles = {
   createStoryText: { position: 'absolute', bottom: '8px', width: '100%', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: '#fff' },
   storyCard: (bgImage) => ({ minWidth: '110px', height: '180px', borderRadius: '10px', backgroundColor: '#3a3b3c', backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative', cursor: 'pointer', padding: '8px', boxSizing: 'border-box', flexShrink: 0, boxShadow: '0 1px 2px rgba(0,0,0,0.2)' }),
   storyAvatarWrapper: { width: '32px', height: '32px', borderRadius: '50%', border: '3px solid #2d88ff', overflow: 'hidden', backgroundColor: '#fff' },
-  storyAvatarImg: { width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer' },
-  storyTitle: { position: 'absolute', bottom: '8px', left: '8px', right: '8px', fontSize: '12px', fontWeight: 'bold', color: '#fff', textShadow: '0 1px 2px rgba(0,0,0,0.8)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
-  
-  modalOverlay: { position: 'fixed', top: '0', left: '0', width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 2000 },
-  modalBox: { backgroundColor: '#242526', padding: '24px', borderRadius: '12px', width: '450px', maxWidth: '90%', color: '#e4e6eb', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' },
-  modalHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid #3a3b3c', paddingBottom: '10px' },
-  
-  storyViewModal: { position: 'relative', width: '360px', height: '580px', backgroundColor: '#000', borderRadius: '12px', overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' },
-  storyCloseBtn: { position: 'absolute', top: '12px', right: '12px', backgroundColor: 'rgba(0,0,0,0.6)', color: '#fff', border: 'none', borderRadius: '50%', width: '32px', height: '32px', fontSize: '16px', cursor: 'pointer', zIndex: '10' },
-  storyViewHeader: { position: 'absolute', top: '12px', left: '12px', display: 'flex', alignItems: 'center', gap: '8px', zIndex: '10' },
-  storyFullImage: { width: '100%', height: '100%', objectFit: 'cover' },
-  storyCaptionText: { position: 'absolute', bottom: '20px', left: '16px', right: '16px', color: '#fff', textAlign: 'center', backgroundColor: 'rgba(0,0,0,0.5)', padding: '8px', borderRadius: '6px', fontSize: '14px', zIndex: '10' }
+  storyAvatarImg: { width: '100%', height: '100%', objectFit: 'cover' },
+  storyTitle: { position: 'absolute', bottom: '8px', left: '8px', right: '8px', fontSize: '12px', fontWeight: 'bold', color: '#fff', textShadow: '0 1px 2px rgba(0,0,0,0.8)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
 };
 
 export default App;
