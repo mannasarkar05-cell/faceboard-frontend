@@ -1,0 +1,302 @@
+/* ফেসবুকের ব্যাকগ্রাউন্ড কালার */
+body {
+  margin: 0;
+  background-color: #f0f2f5;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+/* লগইন ও সাইন-আপ পেজ ডিজাইন */
+.fb-login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f2f5;
+}
+
+.fb-login-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 980px;
+  padding: 20px;
+}
+
+.fb-left {
+  flex: 1;
+  padding-right: 32px;
+}
+
+.fb-logo {
+  font-size: 56px;
+  font-weight: bold;
+  color: #1877f2;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+.fb-tagline {
+  font-size: 28px;
+  line-height: 32px;
+  color: #1c1e21;
+}
+
+.fb-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.fb-card {
+  background-color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 396px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.fb-card input {
+  margin-bottom: 12px;
+  padding: 14px 16px;
+  font-size: 17px;
+  border: 1px solid #ccd0d5;
+  border-radius: 6px;
+  outline: none;
+}
+
+.fb-card input:focus {
+  border-color: #1877f2;
+  box-shadow: 0 0 0 2px #e7f3ff;
+}
+
+.login-btn {
+  background-color: #1877f2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 12px;
+  cursor: pointer;
+  margin-bottom: 12px;
+  transition: background-color 0.2s;
+}
+
+.login-btn:hover {
+  background-color: #166fe5;
+}
+
+.forgot-link {
+  text-align: center;
+  color: #1877f2;
+  font-size: 14px;
+  text-decoration: none;
+  margin-bottom: 20px;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+.divider {
+  border: none;
+  border-bottom: 1px solid #dadde1;
+  margin-bottom: 20px;
+}
+
+.create-account-btn {
+  background-color: #42b72a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 17px;
+  font-weight: bold;
+  padding: 12px 16px;
+  cursor: pointer;
+  align-self: center;
+}
+
+.create-account-btn:hover {
+  background-color: #36a420;
+}
+
+/* হোমপেজ নেভবার ও লেআউট */
+.fb-home {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.fb-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  height: 56px;
+  padding: 0 16px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.search-bar {
+  background-color: #f0f2f5;
+  border: none;
+  border-radius: 50px;
+  padding: 10px 16px;
+  width: 240px;
+  font-size: 15px;
+  outline: none;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logout-btn {
+  background-color: #e4e6eb;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: #d8dadf;
+}
+
+/* ৩ কলাম লেআউট */
+.fb-main-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  max-width: 1250px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.fb-sidebar-left, .fb-sidebar-right {
+  width: 280px;
+  position: sticky;
+  top: 76px;
+  height: calc(100vh - 96px);
+}
+
+.fb-sidebar-left ul, .fb-sidebar-right ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.fb-sidebar-left li, .fb-sidebar-right li {
+  padding: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #050505;
+}
+
+.fb-sidebar-left li:hover, .fb-sidebar-right li:hover {
+  background-color: #e4e6eb;
+}
+
+/* নিউজফিড ও পোস্ট বক্স */
+.fb-feed {
+  flex: 1;
+  max-width: 680px;
+  margin: 0 20px;
+}
+
+.create-post-box {
+  background-color: #ffffff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+}
+
+.create-post-box form {
+  display: flex;
+  gap: 10px;
+}
+
+.create-post-box input {
+  flex: 1;
+  background-color: #f0f2f5;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 15px;
+  font-size: 15px;
+  outline: none;
+}
+
+.post-submit-btn {
+  background-color: #1877f2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.post-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.post-header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.post-header strong {
+  font-size: 15px;
+  color: #050505;
+}
+
+.post-header small {
+  font-size: 12px;
+  color: #65676b;
+}
+
+.post-body {
+  font-size: 15px;
+  color: #050505;
+  margin-bottom: 15px;
+}
+
+.post-footer {
+  display: flex;
+  justify-content: space-around;
+  border-top: 1px solid #e4e6eb;
+  padding-top: 8px;
+}
+
+.post-footer button {
+  background: none;
+  border: none;
+  font-weight: bold;
+  color: #65676b;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+.post-footer button:hover {
+  background-color: #f0f2f5;
+}
