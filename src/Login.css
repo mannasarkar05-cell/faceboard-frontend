@@ -10,8 +10,10 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   background-color: #f0f2f5;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .fb-login-content {
@@ -20,6 +22,7 @@ body {
   align-items: center;
   width: 980px;
   padding: 20px;
+  max-width: 100%;
 }
 
 .fb-left {
@@ -54,6 +57,7 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
   padding: 20px;
   width: 396px;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -66,6 +70,8 @@ body {
   border: 1px solid #ccd0d5;
   border-radius: 6px;
   outline: none;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .fb-card input:focus {
@@ -84,6 +90,7 @@ body {
   cursor: pointer;
   margin-bottom: 12px;
   transition: background-color 0.2s;
+  width: 100%;
 }
 
 .login-btn:hover {
@@ -278,6 +285,15 @@ body {
   font-size: 15px;
   color: #050505;
   margin-bottom: 15px;
+}
+
+/* পোস্টে আপলোড করা ছবি যেন মোবাইলে বা স্ক্রিনে পারফেক্ট সাইজে থাকে */
+.post-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  display: block;
+  margin-top: 10px;
 }
 
 .post-footer {
