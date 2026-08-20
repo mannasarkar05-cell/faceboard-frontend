@@ -212,19 +212,27 @@ function App() {
     }
 };
 
-  const handleLike = (id) => {
+  const handleLike = async (id) => {
+    const targetPost = posts.find(post => (post.id || post._id) === id);
+    if (!targetPost) return;
+
+    const newLikes = targetPost.isLiked ? targetPost.likes - 1 : targetPost.likes + 1;
+    const newIsLiked = !targetPost.isLiked;
+
     setPosts(posts.map(post => {
       const postId = post.id || post._id;
       if (postId === id) {
-        return {
-          ...post,
-          likes: post.isLiked ? post.likes - 1 : post.likes + 1,
-          isLiked: !post.isLiked
-        };
+        return { ...post, likes: newLikes, isLiked: newIsLiked };
       }
       return post;
     }));
-  };
+
+    try {
+      await axios.patch(`${API_URL}/api/posts/${id}/like`, { likes: newLikes, isLiked: newIsLiked });
+    } catch (error) {
+      console.error("Error updating like:", error);
+    }
+};
 
   const toggleExpandPost = (id) => {
     setExpandedPosts(prev => ({ ...prev, [id]: !prev[id] }));
