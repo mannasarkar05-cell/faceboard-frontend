@@ -199,12 +199,17 @@ function App() {
     }
   };
 
-  const handleDeletePost = (id) => {
+  const handleDeletePost = async (id) => {
     if (window.confirm('Are you sure you want to delete this post?')) {
-      // আপনি চাইলে ব্যাকএন্ড থেকেও ডিলিট করার জন্য fetch(`${API_URL}/api/posts/${id}`, { method: 'DELETE' }) যোগ করতে পারেন
-      setPosts(posts.filter(post => post.id !== id && post._id !== id));
+      try {
+        await axios.delete(`${API_URL}/api/posts/${id}`);
+        setPosts(posts.filter(post => post.id !== id && post._id !== id));
+      } catch (error) {
+        console.error("Error deleting post:", error);
+        alert("পোস্ট ডিলিট করা যায়নি। ব্যাকএন্ড কানেকশন চেক করো।");
+      }
     }
-  };
+};
 
   const handleLike = (id) => {
     setPosts(posts.map(post => {

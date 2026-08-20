@@ -11,11 +11,11 @@ export default function Login({ onLoginSuccess }) {
     e.preventDefault();
     try {
       if (isRegister) {
-        await axios.post('https://faceboard-backend-qv2v.onrender.com/api/auth/register', { email, password });
+        await axios.post('https://faceboard-backend-6ert.onrender.com/api/auth/register', { email, password });
         alert('Registration Successful! Please login now.');
         setIsRegister(false);
       } else {
-        const res = await axios.post('https://faceboard-backend-qv2v.onrender.com/api/auth/login', { email, password });
+        const res = await axios.post('https://faceboard-backend-6ert.onrender.com/api/auth/login', { email, password });
         alert('Login Successful!');
         // লগইন সফল হলে মেইন পেজে পাঠিয়ে দেবে
         if (onLoginSuccess) {
