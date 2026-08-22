@@ -992,12 +992,15 @@ function App() {
                 <div style={styles.createStoryPlus}>+</div>
                 <span style={styles.createStoryText}>Create story</span>
                 <input type="file" accept="image/*" onChange={(e) => handleMediaUpload(e, (url) => {
-                  const newStory = { id: Date.now(), name: currentUserName, bgImage: url, avatar: profilePic };
+                  const newStory = { id: Date.now(), timestamp: Date.now(), name: currentUserName, bgImage: url, avatar: profilePic };
                   setStories([newStory, ...stories]);
                 })} style={{ display: 'none' }} />
               </label>
 
-              {stories.map(story => (
+              {stories.filter(story => {
+  const storyTime = story.timestamp || story.id;
+  return (Date.now() - storyTime) < 24 * 60 * 60 * 1000;
+}).map(story => (
                 <div key={story.id} style={styles.storyCard(story.bgImage)}>
                   <div style={styles.storyAvatarWrapper}>
                     <img src={story.avatar || profilePic} alt="avatar" style={styles.storyAvatarImg} />
