@@ -146,14 +146,25 @@ function App() {
     setForgotEmail('');
   };
 
-  const handleMediaUpload = (e, callback) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => callback(reader.result, file.type.startsWith('video') ? 'video' : 'image');
-      reader.readAsDataURL(file);
-    }
-  };
+  const handleMediaUpload = async (e, callback) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append('media', file);
+
+  try {
+    const response = await axios.post(`${API_URL}/api/upload`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    const url = response.data.url;
+    const type = file.type.startsWith('video') ? 'video' : 'image';
+    callback(url, type);
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    alert("ছবি/ভিডিও আপলোড করা যায়নি। আবার চেষ্টা করো।");
+  }
+};
 
   // ৪. ব্যাকএন্ডে পোস্ট সাবমিট করার ফাংশন (async/await সহ)
   const handlePostSubmit = async (e) => {
