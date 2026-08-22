@@ -122,21 +122,36 @@ function App() {
   }, []);
 
   // Handlers
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    alert('Account created successfully! Please log in.');
-    setIsRegistering(false);
-  };
+    try {
+      await axios.post(`${API_URL}/api/auth/register`, {
+        name: loginData.email.split('@')[0],
+        email: loginData.email,
+        password: loginData.password
+      });
+      alert('Account created successfully! Please log in.');
+      setIsRegistering(false);
+    } catch (err) {
+      alert(err.response?.data || "রেজিস্ট্রেশন ব্যর্থ হয়েছে।");
+    }
+};
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (loginData.email) {
+    try {
+      const res = await axios.post(`${API_URL}/api/auth/login`, {
+        email: loginData.email,
+        password: loginData.password
+      });
       const namePart = loginData.email.split('@')[0];
       const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
       setCurrentUserName(formattedName);
+      setIsLoggedIn(true);
+    } catch (err) {
+      alert(err.response?.data || "লগইন ব্যর্থ হয়েছে। ইমেইল ও পাসওয়ার্ড চেক করো।");
     }
-    setIsLoggedIn(true);
-  };
+};
 
   const handleForgotPasswordSubmit = (e) => {
     e.preventDefault();
