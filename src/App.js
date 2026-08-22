@@ -3,7 +3,7 @@ import axios from 'axios';
 import './Login.css';
 
 // ১. আপনার লাইভ ব্যাকএন্ডের URL এখানে সেট করুন
-const API_URL = "https://faceboard-backend-6ert.onrender.com"; // আপনার আসল ব্যাকএন্ড লিঙ্ক এখানে বসাবেন
+const API_URL = process.env.REACT_APP_BACKEND_URL || "https://faceboard-backend-6ert.onrender.com"; // আপনার আসল ব্যাকএন্ড লিঙ্ক এখানে বসাবেন
 
 function App() {
   // Navigation & View States
@@ -238,24 +238,32 @@ function App() {
     setExpandedPosts(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const handleAddComment = (postId, e) => {
-    e.preventDefault();
-    const commentText = commentInputs[postId];
-    if (!commentText || !commentText.trim()) return;
+  const handleAddComment = async (postId, e) => {
+  e.preventDefault();
+  const commentText = commentInputs[postId];
+  if (!commentText || !commentText.trim()) return;
 
-    setPosts(posts.map(post => {
-      const currentId = post.id || post._id;
-      if (currentId === postId) {
-        return {
-          ...post,
-          comments: [...post.comments, `${currentUserName}: ${commentText}`]
-        };
-      }
-      return post;
-    }));
+  const targetPost = posts.find(post => (post.id || post._id) === postId);
+  if (!targetPost) return;
 
-    setCommentInputs({ ...commentInputs, [postId]: '' });
-  };
+  const newComments = [...targetPost.comments, `${currentUserName}: ${commentText}`];
+
+  setPosts(posts.map(post => {
+    const currentId = post.id || post._id;
+    if (currentId === postId) {
+      return { ...post, comments: newComments };
+    }
+    return post;
+  }));
+
+  setCommentInputs({ ...commentInputs, [postId]: '' });
+
+  try {
+    await axios.patch(`${API_URL}/api/posts/${postId}/comment`, { comments: newComments });
+  } catch (error) {
+    console.error("Error saving comment:", error);
+  }
+};
 
   // --- Helper to close all floating popups ---
   const closeAllPopups = () => {
